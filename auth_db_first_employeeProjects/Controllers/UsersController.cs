@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,23 +10,22 @@ using auth_db_first_employeeProjects.Models;
 
 namespace auth_db_first_employeeProjects.Controllers
 {
-    public class EmployeesController : Controller
+    public class UsersController : Controller
     {
         private readonly CompanyManagementContext _context;
 
-        public EmployeesController(CompanyManagementContext context)
+        public UsersController(CompanyManagementContext context)
         {
             _context = context;
         }
 
-        // GET: Employees
+        // GET: Users
         public async Task<IActionResult> Index()
         {
-            var companyManagementContext = _context.Employees.Include(e => e.CreatedByNavigation);
-            return View(await companyManagementContext.ToListAsync());
+            return View(await _context.Users.ToListAsync());
         }
 
-        // GET: Employees/Details/5
+        // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -30,42 +33,39 @@ namespace auth_db_first_employeeProjects.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.CreatedByNavigation)
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
-            if (employee == null)
+            var user = await _context.Users
+                .FirstOrDefaultAsync(m => m.UserId == id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(user);
         }
 
-        // GET: Employees/Create
+        // GET: Users/Create
         public IActionResult Create()
         {
-            ViewData["CreatedBy"] = new SelectList(_context.Users, "UserId", "UserId");
             return View();
         }
 
-        // POST: Employees/Create
+        // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeId,Name,Email,DepartmentId,CreatedBy")] Employee employee)
+        public async Task<IActionResult> Create([Bind("UserId,Username,PasswordHash,Role,IsActive")] User user)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
+                _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreatedBy"] = new SelectList(_context.Users, "UserId", "UserId", employee.CreatedBy);
-            return View(employee);
+            return View(user);
         }
 
-        // GET: Employees/Edit/5
+        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,23 +73,22 @@ namespace auth_db_first_employeeProjects.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
-            ViewData["CreatedBy"] = new SelectList(_context.Users, "UserId", "UserId", employee.CreatedBy);
-            return View(employee);
+            return View(user);
         }
 
-        // POST: Employees/Edit/5
+        // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EmployeeId,Name,Email,DepartmentId,CreatedBy")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,Username,PasswordHash,Role,IsActive")] User user)
         {
-            if (id != employee.EmployeeId)
+            if (id != user.UserId)
             {
                 return NotFound();
             }
@@ -98,12 +97,12 @@ namespace auth_db_first_employeeProjects.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+                    _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.EmployeeId))
+                    if (!UserExists(user.UserId))
                     {
                         return NotFound();
                     }
@@ -114,11 +113,10 @@ namespace auth_db_first_employeeProjects.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreatedBy"] = new SelectList(_context.Users, "UserId", "UserId", employee.CreatedBy);
-            return View(employee);
+            return View(user);
         }
 
-        // GET: Employees/Delete/5
+        // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,35 +124,34 @@ namespace auth_db_first_employeeProjects.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.CreatedByNavigation)
-                .FirstOrDefaultAsync(m => m.EmployeeId == id);
-            if (employee == null)
+            var user = await _context.Users
+                .FirstOrDefaultAsync(m => m.UserId == id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(user);
         }
 
-        // POST: Employees/Delete/5
+        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee != null)
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
             {
-                _context.Employees.Remove(employee);
+                _context.Users.Remove(user);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EmployeeExists(int id)
+        private bool UserExists(int id)
         {
-            return _context.Employees.Any(e => e.EmployeeId == id);
+            return _context.Users.Any(e => e.UserId == id);
         }
     }
 }

@@ -1,3 +1,5 @@
+using auth_db_first_employeeProjects.Services;
+
 namespace auth_db_first_employeeProjects
 {
     public class Program
@@ -8,6 +10,8 @@ namespace auth_db_first_employeeProjects
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.ConfigureMsSqlContext(builder.Configuration);
 
             var app = builder.Build();
 
@@ -23,7 +27,7 @@ namespace auth_db_first_employeeProjects
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=EmployeeProjects}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();
