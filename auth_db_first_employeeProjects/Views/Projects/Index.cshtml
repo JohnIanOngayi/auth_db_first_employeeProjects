@@ -1,0 +1,35 @@
+﻿@model IEnumerable<auth_db_first_employeeProjects.ViewModels.Projects.ProjectDetailsViewModel>
+
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<h1>Employees</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Project Name</th>
+            <th>Start Date</th>
+            @* <th>Created By</th> *@
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ProjectName</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                @* <td>@item.CreatedByNavigation.UserName</td> *@
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.ProjectId">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

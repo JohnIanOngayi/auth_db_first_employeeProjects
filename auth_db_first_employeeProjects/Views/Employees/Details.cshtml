@@ -1,0 +1,51 @@
+﻿@model auth_db_first_employeeProjects.ViewModels.Employees.EmployeeDetailsViewModel
+
+@{
+    ViewData["Title"] = "Employee Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Employee</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Name)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Name)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Email)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Email)</dd>
+
+        @* <dt class="col-sm-2">Created By</dt> *@
+        @* <dd class="col-sm-10">@Model.CreatedByNavigation.UserName</dd> *@
+    </dl>
+</div>
+
+@if (Model.AssignedToProjects != null && Model.AssignedToProjects.Any())
+{
+    <div>
+        <h5>Assigned Projects</h5>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Project Name</th>
+                    <th>Start Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var project in Model.AssignedToProjects)
+                {
+                    <tr>
+                        <td>@project.ProjectName</td>
+                        <td>@project.StartDate.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.EmployeeId" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
